@@ -16,7 +16,7 @@ const db = knex({
 
 app.use(cors());
 app.use(express.json());
-//home route//////////////////////////////////////////////////////////////////////////////
+//endpoint to search mess using pincode and return array containing messes found in db
 app.get("/mess/:pin", (req, res) => {
   const { pin } = req.params;
   db.select(
@@ -41,7 +41,7 @@ app.get("/mess/:pin", (req, res) => {
     })
     .catch((err) => res.status(400).json("error getting mess"));
 });
-//signin route///////////////////////////////////////////////////////////////////////////
+//endpoint to verify user for sign and return user details
 app.post("/signin", (req, res) => {
   const profile = {};
   db.select("email", "password")
@@ -74,7 +74,7 @@ app.post("/signin", (req, res) => {
     })
     .catch((err) => res.status(400).json("wrong credentials"));
 });
-//register route//////////////////////////////////////////////////////////////////////////
+//endpoint to register new user and store it's information to database
 app.post("/register", (req, res) => {
   const {
     email,
@@ -115,9 +115,10 @@ app.post("/register", (req, res) => {
     .catch((err) => {
       if (err.detail.includes("already exists")) {
         res.json("User already registered. Please Sign in");
-      }
-      else{
-        res.status(400).json("Some error occurred. Unable to register. Please try again.")
+      } else {
+        res
+          .status(400)
+          .json("Some error occurred. Unable to register. Please try again.");
       }
     });
 });

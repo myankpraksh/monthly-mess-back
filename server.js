@@ -16,6 +16,7 @@ const db = knex({
 
 app.use(cors());
 app.use(express.json());
+
 //endpoint to search mess using pincode and return array containing messes found in db
 app.get("/mess/:pin", (req, res) => {
   const { pin } = req.params;
@@ -123,6 +124,37 @@ app.post("/register", (req, res) => {
     });
 });
 
+//endpoint to rate a mess
+app.post("/rate/:id/:score", (req, res) => {
+  let { id, score } = req.params;
+  score = Number(score);
+  let rating_f = 50;
+  let no_of_rating_f = 0;
+  db.select("no_of_rating", "rating")
+    .from("mess")
+    .where("id", "=", id)
+    .then((mess) => {
+      let { rating, no_of_rating } = mess[0];
+      if (no_of_rating > 0)
+        rating_f =
+          Math.round(
+            ((rating * no_of_rating + score) / (no_of_rating + 1)) * 100
+          ) / 100;
+      else rating_f = score;
+      no_of_rating_f = no_of_rating + 1;
+      db("mess")
+        .where("id", "=", id)
+        .update({
+          rating: rating_f,
+          no_of_rating: no_of_rating_f,
+        })
+        .then((user) => {
+          res.json("Rating Submitted Successfully!!");
+        })
+        .catch((err) => res.status(400).json("Error trying to rate"));
+    })
+    .catch((err) => res.status(400).json("error trying to rate"));
+});
 app.listen(3000, () => {
   console.log("App started successfully on port 3000");
 });

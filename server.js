@@ -149,7 +149,7 @@ app.post("/rate/:id/:score", (req, res) => {
           no_of_rating: no_of_rating_f,
         })
         .then((user) => {
-          res.json("Rating Submitted Successfully!!");
+          res.json(rating_f);
         })
         .catch((err) => res.status(400).json("Error trying to rate"));
     })

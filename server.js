@@ -155,6 +155,56 @@ app.post("/rate/:id/:score", (req, res) => {
     })
     .catch((err) => res.status(400).json("error trying to rate"));
 });
+
+//endpoint to delete user profile
+app.delete("/delete/:id", (req, res) => {
+  let { id } = req.params;
+  db("mess")
+    .where("id", id)
+    .del()
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((err) => res.status(400).json("Error trying to delete"));
+});
+
+//endpoint to update user profiles
+app.post("/updateuser/:id", (req, res) => {
+  let { id } = req.params;
+  const { email, name, phone, short_description, address, pincode, city } =
+    req.body;
+
+  db("mess")
+    .returning([
+      "id",
+      "name",
+      "email",
+      "phone",
+      "short_description",
+      "address",
+      "pincode",
+      "city",
+      "rating",
+    ])
+    .where("id", "=", id)
+    .update({
+      email: email,
+      name: name,
+      phone: phone,
+      short_description: short_description,
+      address: address,
+      pincode: pincode,
+      city: city,
+    })
+    .then((user) => {
+      res.json(user[0]);
+    })
+    .catch((err) => {
+      res
+        .status(400)
+        .json("Some error occurred. Unable to register. Please try again.");
+    });
+});
 app.listen(3000, () => {
   console.log("App started successfully on port 3000");
 });

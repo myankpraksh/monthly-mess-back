@@ -3,6 +3,7 @@ const cors = require("cors");
 const knex = require("knex");
 const app = express();
 const bcrypt = require("bcrypt-nodejs");
+const multer = require("multer");
 
 const db = knex({
   client: "pg",
@@ -14,9 +15,26 @@ const db = knex({
   },
 });
 
+//functions to write image file to disk starts
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public");
+  },
+  filename: (req, file, cb) => {
+    let name = req.body.id + "." + req.body.ext;
+    cb(null, name);
+  },
+});
+
+const upload = multer({ storage: storage }).single("file");
+
+//functions to write image file to disk over
+
 app.use(cors());
 app.use(express.json());
 
+//so that profile images are accessible
+app.use("/public", express.static("public"));
 //endpoint to search mess using pincode and return array containing messes found in db
 app.get("/mess/:pin", (req, res) => {
   const { pin } = req.params;
@@ -29,7 +47,8 @@ app.get("/mess/:pin", (req, res) => {
     "address",
     "pincode",
     "city",
-    "rating"
+    "rating",
+    "img_name"
   )
     .from("mess")
     .where("pincode", "=", pin)
@@ -61,7 +80,8 @@ app.post("/signin", (req, res) => {
             "address",
             "pincode",
             "city",
-            "rating"
+            "rating",
+            "img_name"
           )
           .from("mess")
           .where("email", "=", req.body.email)
@@ -205,6 +225,29 @@ app.post("/updateuser/:id", (req, res) => {
         .json("Some error occurred. Unable to register. Please try again.");
     });
 });
+
+//endpoint to upload user images
+app.post("/uploadimage/:id", (req, res) => {
+  const { id } = req.params;
+  upload(req, res, (err) => {
+    if (err) {
+      res.json("err");
+    }
+    db("mess")
+      .where("id", "=", id)
+      .update({
+        img_name: req.file.filename,
+      })
+      .then((user) => {
+        res.json(req.file.filename);
+      })
+      .catch((err) => {
+        res.json("err");
+      });
+  });
+});
+
+/////////////////////////////////
 app.listen(3000, () => {
   console.log("App started successfully on port 3000");
 });

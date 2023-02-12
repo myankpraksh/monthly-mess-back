@@ -8,10 +8,10 @@ const multer = require("multer");
 const db = knex({
   client: "pg",
   connection: {
-    host: "127.0.0.1",
-    user: "Icola",
-    password: "tree",
-    database: "monthly_mess",
+    host: process.env.dbHost,
+    user: process.env.dbUser,
+    password: process.env.dbPass,
+    database: process.env.dbName,
   },
 });
 
@@ -248,6 +248,6 @@ app.post("/uploadimage/:id", (req, res) => {
 });
 
 /////////////////////////////////
-app.listen(3000, () => {
-  console.log("App started successfully on port 3000");
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`App started successfully on port 3000`);
 });

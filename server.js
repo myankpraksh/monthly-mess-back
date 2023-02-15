@@ -119,6 +119,7 @@ app.post("/register", (req, res) => {
       "pincode",
       "city",
       "rating",
+      "img_name"
     ])
     .insert({
       password: hash,
@@ -205,6 +206,7 @@ app.post("/updateuser/:id", (req, res) => {
       "pincode",
       "city",
       "rating",
+      "img_name"
     ])
     .where("id", "=", id)
     .update({

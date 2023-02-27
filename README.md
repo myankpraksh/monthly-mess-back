@@ -3,6 +3,33 @@
 ## About
 This is my submission for Neighborhood Hacks 2.
 
+This is a backend for [Monthly Mess](https://github.com/myankpraksh/monthly-mess). It provides all necessary APIs for its frontend.
+
+## Requirement
+* It requires a PostgreSQL database to work. The SQL to create required database it
+
+```sql
+
+create table public.mess
+(
+	id serial
+		primary key,
+	name text not null,
+	email text not null
+		unique,
+	phone text not null,
+	short_description text not null,
+	address text not null,
+	pincode text not null,
+	city text not null,
+	password text not null,
+	rating real default 3 not null,
+	no_of_rating integer default 0,
+	img_name text default 'food-placeholder.jpg'::text
+);
+
+```
+
 ## How to run it?
 
 This repo is the backend, to run this you would need the [frontend](https://github.com/myankpraksh/monthly-mess)

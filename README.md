@@ -6,7 +6,7 @@ This is my submission for Neighborhood Hacks 2.
 This is a backend for [Monthly Mess](https://github.com/myankpraksh/monthly-mess). It provides all necessary APIs for its frontend.
 
 ## Requirement
-* It requires a PostgreSQL database to work. The SQL to create required database it
+* It requires a PostgreSQL database to work. The SQL code to create required database is
 
 ```sql
 
